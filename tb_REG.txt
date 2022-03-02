@@ -1,0 +1,78 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 20.02.2022 18:00:50
+-- Design Name: 
+-- Module Name: REG_tb - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity tb_REG is
+    generic (width: natural:= 8); -- generic width is bus length
+end tb_REG;
+
+architecture Behavioral of tb_REG is
+
+  component REG
+  Port (
+    D : in STD_LOGIC_VECTOR (width-1 downto 0);
+    clk : in STD_LOGIC;
+    rst: in STD_LOGIC;
+    Q : out STD_LOGIC_VECTOR (width-1 downto 0));
+  end component;
+
+  signal d_in : STD_LOGIC_VECTOR(width-1 downto 0);
+  signal clock: STD_LOGIC;
+  signal reset: STD_LOGIC;
+  signal q_out : STD_LOGIC_VECTOR(width-1 downto 0);
+
+begin
+
+  uut: REG port map (
+    D => d_in, clk => clock, rst => reset,
+    Q => q_out);
+    
+  CLK : process
+  begin
+    clock <= '0';
+    wait for 10 ns;
+    clock <= '1';
+    wait for 10 ns;
+  end process;
+    
+  tb: process
+  begin
+    reset <= '0';
+    d_in <= "00000000";
+    wait for 40 ns;  
+    d_in <= "00011011";
+    wait for 40 ns;
+    reset <= '1';
+    wait for 40 ns;
+  end process;
+
+end Behavioral;

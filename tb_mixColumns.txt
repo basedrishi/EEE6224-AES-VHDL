@@ -1,0 +1,79 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 21.02.2022 02:32:35
+-- Design Name: 
+-- Module Name: tb_mixColumns - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity tb_mixColumns is
+    generic (width: natural:= 8); -- generic width is bus length
+end tb_mixColumns;
+
+architecture Behavioral of tb_mixColumns is
+component mixColumns is
+    Port (
+            clk                     : in STD_LOGIC;
+            rst                     : in STD_LOGIC;
+            d                       : in STD_LOGIC_VECTOR (width-1 downto 0);
+            q0                      : out STD_LOGIC_VECTOR (width-1 downto 0);    
+            q1                      : out STD_LOGIC_VECTOR (width-1 downto 0);
+            q2                      : out STD_LOGIC_VECTOR (width-1 downto 0);
+            q3                      : out STD_LOGIC_VECTOR (width-1 downto 0)
+    );
+end component;
+
+            signal clk                     : STD_LOGIC;
+            signal rst                     : STD_LOGIC;
+            signal d                       : STD_LOGIC_VECTOR (width-1 downto 0);
+            signal q0                      : STD_LOGIC_VECTOR (width-1 downto 0);
+            signal q1                      : STD_LOGIC_VECTOR (width-1 downto 0);
+            signal q2                      : STD_LOGIC_VECTOR (width-1 downto 0);
+            signal q3                      : STD_LOGIC_VECTOR (width-1 downto 0);
+
+begin
+    uut: mixColumns port map (clk => clk, rst => rst, d => d, q0 => q0, q1 => q1, q2 => q2, q3 => q3);
+    
+  process begin
+    clk <= '1';
+    wait for 10 ns;
+    clk <= '0';
+    wait for 10 ns;
+  end process;
+  
+  rst   <= '1', '0' after 40ns, 
+                '1' after 140ns, '0' after 160ns,
+                '1' after 240ns, '0' after 260ns,
+                '1' after 340ns, '0' after 360ns,
+                '1' after 440ns;
+                 
+  d     <=  x"00",  x"d4" after 40ns,   x"bf" after 60ns,   x"5d" after 80ns,   x"30" after 100ns, 
+                    x"e0" after 140ns,  x"b4" after 160ns,  x"52" after 180ns,  x"ae" after 200ns,
+                    x"b8" after 240ns,  x"41" after 260ns,  x"11" after 280ns,  x"f1" after 300ns,
+                    x"1e" after 340ns,  x"27" after 360ns,  x"98" after 380ns,  x"e5" after 400ns;
+end Behavioral;

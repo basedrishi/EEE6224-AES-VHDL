@@ -1,0 +1,92 @@
+----------------------------------------------------------------------------------
+-- Company: 
+-- Engineer: 
+-- 
+-- Create Date: 15.02.2022 20:29:42
+-- Design Name: 
+-- Module Name: mixColumns - Behavioral
+-- Project Name: AES
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--use IEEE.NUMERIC_STD.ALL;
+
+-- Uncomment the following library declaration if instantiating
+-- any Xilinx leaf cells in this code.
+--library UNISIM;
+--use UNISIM.VComponents.all;
+
+entity mixColumns is
+    generic (width: natural:= 8); -- generic width is bus length
+    Port (
+            clk                     : in STD_LOGIC;
+            rst                     : in STD_LOGIC;
+            d                       : in STD_LOGIC_VECTOR (width-1 downto 0);
+            q0                      : out STD_LOGIC_VECTOR (width-1 downto 0);
+            q1                      : out STD_LOGIC_VECTOR (width-1 downto 0);
+            q2                      : out STD_LOGIC_VECTOR (width-1 downto 0);
+            q3                      : out STD_LOGIC_VECTOR (width-1 downto 0)      
+    );
+end mixColumns;
+
+architecture Behavioral of mixColumns is
+    component REG 
+        Port ( D : in STD_LOGIC_VECTOR (width-1 downto 0);
+         clk : in STD_LOGIC;
+         rst : in STD_LOGIC;
+         Q : out STD_LOGIC_VECTOR (width-1 downto 0));
+    end component; 
+    
+    signal reg_d0                    : STD_LOGIC_VECTOR (width-1 downto 0);
+    signal reg_d1                    : STD_LOGIC_VECTOR (width-1 downto 0);
+    signal reg_d2                    : STD_LOGIC_VECTOR (width-1 downto 0);
+    signal reg_d3                    : STD_LOGIC_VECTOR (width-1 downto 0);
+    
+    signal q0prime                   : STD_LOGIC_VECTOR (width-1 downto 0);
+    signal q1prime                   : STD_LOGIC_VECTOR (width-1 downto 0);
+    signal q2prime                   : STD_LOGIC_VECTOR (width-1 downto 0);
+    signal q3prime                   : STD_LOGIC_VECTOR (width-1 downto 0);
+    signal dprime                    : STD_LOGIC_VECTOR (width-1 downto 0);
+    
+    signal gf3out                    : STD_LOGIC_VECTOR (width-1 downto 0);
+    signal gf2out                    : STD_LOGIC_VECTOR (width-1 downto 0);
+    
+begin
+
+    reg0: REG port map(D => reg_d0, Q => q0prime, clk => clk, rst => rst);
+    reg1: REG port map(D => reg_d1, Q => q1prime, clk => clk, rst => rst);
+    reg2: REG port map(D => reg_d2, Q => q2prime, clk => clk, rst => rst);
+    reg3: REG port map(D => reg_d3, Q => q3prime, clk => clk, rst => rst);
+    
+    
+    gf3out <= (d(width-2 downto 0) & '0') xor ("000" & d(width-1) & d(width-1) & '0' & d(width-1) & d(width-1)) xor d;
+    gf2out <= (d(width-2 downto 0) & '0') xor ("000" & d(width-1) & d(width-1) & '0' & d(width-1) & d(width-1));
+    dprime <= d;
+
+    reg_d0 <= dprime xor q1prime; 
+    reg_d1 <= dprime xor q2prime; 
+    reg_d2 <= gf3out xor q3prime;
+    reg_d3 <= gf2out xor q0prime;
+    
+    
+    q0 <= q0prime;
+    q1 <= q1prime;
+    q2 <= q2prime;
+    q3 <= q3prime;
+    
+end Behavioral;
